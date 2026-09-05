@@ -76,6 +76,14 @@ a kept final `return()`, the checker step caught it in iteration 2. Running the 
 costs about 25 seconds and 3,000 tokens per task. Single runs per cell, so treat the
 numbers as directional.
 
+### Triggering
+
+The description was tuned with skill-creator's optimisation loop: 20 realistic queries (10
+should trigger, 10 near-misses such as debugging a join, explaining inherited R code, or a
+Python plotting script), 3 runs each, 60/40 train/test split, Fable 5.1. The original
+description hit 92% / 83% (train / test), over-triggering on general R help. The tuned one
+hit 100% / 100% and names the exclusions explicitly.
+
 ## What the conversion does
 
 `references/*.md` differ from the upstream `.qmd` files only in these mechanical ways:

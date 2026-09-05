@@ -1,0 +1,22 @@
+[
+  {"query": "can you clean up W:\\arthur\\projects\\hpi\\R\\build_index.R so it matches tidyverse style? a colleague wrote it with = everywhere and %>% and honestly its a mess, dont change what it does though", "should_trigger": true},
+  {"query": "write me a function for our aeihousing package that takes the FHFA HPI tibble (cols: msa, year, quarter, hpi) and returns year-over-year growth by msa. roxygen docs please, and put the testthat file where it belongs", "should_trigger": true},
+  {"query": "Add a NEWS.md entry for the change we just made to read_permits() (it was issue #114, the PR came from @klee who isn't a package author) and give me a commit message for it", "should_trigger": true},
+  {"query": "the error in validate_geo() is just stop('bad input'). make it a proper cli error that tells the user what was expected and what they actually passed, with a hint if the fix is obvious", "should_trigger": true},
+  {"query": "review this PR before I merge it - it's the ggplot refactor in plots/fig-3-affordability.R. mostly worried about formatting, indentation of the + layers, and whether the pipes are laid out right", "should_trigger": true},
+  {"query": "new script for the monthly deck: read the data/raw/2026-08 zillow csvs, dedupe, join to our msa crosswalk in data/xwalk.csv, summarise median rent by price tier, and make a line chart. R with dplyr and ggplot2.", "should_trigger": true},
+  {"query": "im writing roxygen for a couple of pkg functions and not sure about conventions - do function names in @seealso get backticks or [] links? and does the title line end in a period?", "should_trigger": true},
+  {"query": "restyle everything under R/ in the wimby package, 40ish files. what's the fastest way to do it and what kinds of things will change?", "should_trigger": true},
+  {"query": "lintr is complaining 'use <- not =' and 'line too long' all over analysis/03-regressions.R. fix those and anything else stylistic you see, keep the results identical", "should_trigger": true},
+  {"query": "how should i format a long function definition in R when the arguments don't fit on one line? i've seen two different indent styles, which is right", "should_trigger": true},
+  {"query": "my dplyr pipeline returns 0 rows after the inner_join to the crosswalk and i can't work out why. msa codes look the same in both tables. here's the code and a head() of each table", "should_trigger": false},
+  {"query": "explain what this R code does line by line, i inherited it from someone who left and don't understand the purrr::reduce bit or the nested map_dfr", "should_trigger": false},
+  {"query": "write a python script that reads data/permits_2024.csv and plots monthly totals per region with matplotlib, one line per region, save to fig/permits.png", "should_trigger": false},
+  {"query": "ggplot is putting my months out of order on the x axis (Apr, Aug, Dec...) how do i make them chronological? month is a character column like '2024-03'", "should_trigger": false},
+  {"query": "how do I set up renv for this project and pin package versions so the server run matches my laptop", "should_trigger": false},
+  {"query": "the lm() summary gives me a coefficient for year:msa_tier. how do i interpret that interaction term, and should year be a factor here", "should_trigger": false},
+  {"query": "write the git commit message for my change to the python ingest pipeline (switched from requests to httpx, retries on 429). it closes #88", "should_trigger": false},
+  {"query": "rewrite this paragraph from the methods section so it's clearer, it's about how we weight tract-level estimates up to the msa: 'Weights are derived from...'", "should_trigger": false},
+  {"query": "my R script dies with 'object of type closure is not subsettable' at line 40 which is just df$mean[1]. what does that even mean", "should_trigger": false},
+  {"query": "install lintr and styler into the project pixi env and add them to pixi.toml so the checker runs on the server too", "should_trigger": false}
+]

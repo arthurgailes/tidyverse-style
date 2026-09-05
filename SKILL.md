@@ -1,6 +1,6 @@
 ---
 name: tidyverse-style
-description: Use when writing, reviewing, or restyling R code, R packages, roxygen2 documentation, testthat files, cli error messages, NEWS.md entries, or git commits and pull requests for R projects, so that they follow tidyverse conventions for naming, spacing, pipes, ggplot2 layout, braces, return(), and comments.
+description: "Apply the tidyverse style guide whenever the deliverable is R code, or text inside an R project, that must follow tidyverse conventions: writing new R functions, scripts, or packages; restyling or cleaning up existing .R files; reviewing R pull requests for style; and answering questions about how R code should be laid out (naming, spacing, indentation, line breaks, pipes, ggplot2 chains, braces, return(), comments). Also covers roxygen2 documentation, testthat file layout, cli error-message wording, NEWS.md bullets, and commit or PR messages for R packages. Do not use when the user only wants existing R code explained or walked through, a runtime error diagnosed, wrong results or empty joins debugged, or R tooling installed, and not for non-R languages or ordinary prose."
 metadata:
   upstream: https://github.com/tidyverse/style
   upstream_commit: 2aed77e452a059f4b5c9c4a991d00ea0c5e70cab
