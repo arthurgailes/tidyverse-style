@@ -1,0 +1,67 @@
+name: Upstream sync check
+
+# Weekly: is references/ or SKILL.md behind github.com/tidyverse/style?
+# On drift, regenerate references/ and open (or update) a pull request that
+# carries the regenerated files plus the upstream diff, so the SKILL.md
+# compaction can be updated by hand in the same PR.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Check for drift
+        id: drift
+        run: |
+          set +e
+          python scripts/sync.py --check | tee check.txt
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate references and capture upstream diff
+        if: steps.drift.outputs.status != '0'
+        run: |
+          python scripts/sync.py | tee sync.txt
+          OLD=$(grep -oP '^\s*upstream_commit:\s*\K[0-9a-f]+' SKILL.md)
+          NEW=$(git -C upstream rev-parse HEAD)
+          {
+            echo "## Upstream moved: \`${OLD:0:10}\` -> \`${NEW:0:10}\`"
+            echo
+            echo '`references/` has been regenerated in this PR. `SKILL.md` still needs its'
+            echo 'compaction updated for the sections below, then `python scripts/sync.py --mark`.'
+            echo
+            echo '```'
+            cat sync.txt
+            echo '```'
+            echo
+            echo '<details><summary>Full upstream diff of the chapter sources</summary>'
+            echo
+            echo '```diff'
+            git -C upstream diff "$OLD..$NEW" -- '*.qmd' _quarto.yml
+            echo '```'
+            echo '</details>'
+          } > pr-body.md
+
+      - name: Open or update pull request
+        if: steps.drift.outputs.status != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: upstream-sync
+          title: "Sync with tidyverse/style"
+          body-path: pr-body.md
+          commit-message: "Regenerate references from upstream"
+          add-paths: references/
+          labels: upstream-sync

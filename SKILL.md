@@ -24,10 +24,28 @@ Verified failures from agents writing R without this skill:
   offenders; split them one argument per line, or extract a function.
 - Pipe data into `ggplot()`; never filter/slice inside the `data` argument.
 - NEWS bullets end `(@user, #issue).` in that order, with the parentheses before the full stop.
+  While in development a bullet is one line, however long; wrapping happens at release.
 - Commit subject: under 50 characters, sentence case, no period; `Fixes #<n>` (not "Closes")
   in the body.
 - `return()`, `stop()`, `break`, `next` always get their own `{}` block, never a one-line `if`.
 - Anonymous functions: `\(x) x + 1`, not `~ .x + 1`; never `\()` for multi-line or named functions.
+- ASCII only in `.R` files (local rule, below).
+
+## Local rules
+
+Not part of style.tidyverse.org; kept here so they survive upstream syncs. Apply them with
+the same force as the guide.
+
+- **ASCII only in R source files.** No character above 0x7F anywhere in a `.R` file: not in
+  code, comments, or string literals. That rules out smart quotes, em and en dashes,
+  non-breaking spaces, accented letters, box-drawing characters, and emoji, including
+  the info and cross bullet glyphs that cli renders (name the bullets `"i"` and `"x"` in
+  the cli call and let cli draw them). Files cross Windows and Linux machines with
+  different default encodings, `R CMD check` warns on non-ASCII in `R/`, and a stray
+  non-breaking space is invisible yet breaks parsing. When a non-ASCII character is
+  genuinely needed in a string, write it as an escape: `"\u00e9"` for e-acute,
+  `"\u2014"` for an em dash.
+  `scripts/check.R` reports every offending line.
 
 ---
 
@@ -494,6 +512,23 @@ matters to them; purely internal changes get no bullet.
   Complex change: overview of the changes, plus `Fixes #<issue-number>` in the description.
 
 ---
+
+## Checking code mechanically
+
+After writing or restyling `.R` files, run the bundled checker if R is available. It applies
+lintr's tidyverse defaults plus the guide's non-default rules (base pipe only, `library()`
+at the top, no `~ .x` lambdas, `&&`/`||` in conditions, no assignment inside calls,
+implicit returns), the local ASCII-only rule, and a styler dry run for layout.
+
+```bash
+Rscript scripts/check.R path/to/file.R          # report; exit 1 if anything is off
+Rscript scripts/check.R --fix path/to/file.R    # let styler fix layout first, then report
+```
+
+Fix what it reports, then re-run until it exits 0. It cannot judge names, comments, roxygen
+wording, error-message wording, NEWS, or commits; review those against the sections above.
+One known gap: styler puts every `switch()` element on its own line, while the guide allows
+one line when all elements fit, so that particular styler diff may be ignored.
 
 ## Staying in sync with upstream
 

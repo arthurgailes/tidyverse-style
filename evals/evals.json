@@ -1,0 +1,70 @@
+{
+  "skill_name": "tidyverse-style",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Here's a script from a colleague, messy_analysis.R. Restyle it to tidyverse style without changing what it does. Save the result as analysis.R. Don't run it, the data isn't here.",
+      "expected_output": "analysis.R restyled to the guide with zero check.R findings and behaviour unchanged",
+      "files": [
+        "evals/files/messy_analysis.R"
+      ],
+      "expectations": [
+        "check.R (lintr, tidyverse defaults + guide extras) reports 0 lints",
+        "All library() calls come before any other code",
+        "No magrittr %>% pipe remains",
+        "No line exceeds 80 characters",
+        "No formula lambda (~ .x) remains",
+        "No single-line if/for containing return/stop/break/next",
+        "No explicit return() as a function's final expression",
+        "Data is filtered in a pipeline, not inside ggplot()'s data argument",
+        "Assignment uses <- (no top-level = assignment)",
+        "Double quotes only (no single-quoted strings)",
+        "TRUE/FALSE rather than T/F",
+        "R file contains only ASCII characters (local rule)"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "I'm adding a function to our R package hpitools. Write count_missing(df, cols = NULL) that returns a tibble with one row per column (column, n_missing, pct_missing); if cols is given, only those columns, and throw an error with the cli package if any of them aren't in df. Give me: the R file with roxygen2 docs at R/count_missing.R, a testthat test file in the right place, a NEWS.md with the bullet for this (issue #87, contributed by @mlopez who is not a package author), and a git commit message saved to COMMIT_MSG.txt.",
+      "expected_output": "R/count_missing.R, tests/testthat/test-count_missing.R, NEWS.md and COMMIT_MSG.txt all following the Packages and Git chapters",
+      "files": [],
+      "expectations": [
+        "Test file is tests/testthat/test-count_missing.R",
+        "roxygen title is sentence case with no trailing full stop",
+        "Every @param and @return description ends with a full stop",
+        "cli problem statement uses 'must' or \"Can't\", sentence case, ends with full stop",
+        "No explicit return() as the function's final expression",
+        "check.R reports 0 lints on R/ and test file",
+        "R files contain only ASCII characters (local rule)",
+        "NEWS bullet ends with (@mlopez, #87). in that order",
+        "NEWS bullet puts `count_missing()` at or near the start",
+        "NEWS in-development bullet is a single line (not wrapped)",
+        "Commit subject under 50 chars, sentence case, no trailing period",
+        "Commit has blank line after subject and contains 'Fixes #87'"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review review_target.R for style problems before I send it to the team. Write the review as review.md: a list of every issue with the line number and the fix. Don't rewrite the file.",
+      "expected_output": "review.md listing every planted violation with line number and fix",
+      "files": [
+        "evals/files/review_target.R"
+      ],
+      "expectations": [
+        "Flags `=` assignment on line 5",
+        "Flags single quotes on line 6",
+        "Flags magrittr %>% (recommend |>)",
+        "Flags unbraced single-line `if(...) return(NULL)` on line 11",
+        "Flags redundant final return(out) on line 16",
+        "Flags unbraced for-loop body on line 21",
+        "Flags braces in single-line if/else on line 23",
+        "Flags redefining `mean` on line 25",
+        "Flags filter() inside ggplot() data argument on line 28",
+        "Flags ~ .x formula lambda on line 32",
+        "Flags & instead of && in if condition on line 34",
+        "Flags library(ggplot2) at bottom on line 35",
+        "Flags lines over 80 characters (14, 19, or 28)"
+      ]
+    }
+  ]
+}

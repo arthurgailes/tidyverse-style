@@ -33,8 +33,48 @@ Two commits are tracked:
   `git diff` command to see exactly what, so the matching sections of `SKILL.md` can be
   updated by hand. Run `--mark` afterwards.
 
-Suggested cadence: run `python scripts/sync.py --check` in CI or on a schedule and treat a
-non-zero exit as "someone needs to fold upstream changes into `SKILL.md`".
+`.github/workflows/upstream-sync.yml` runs the check every Monday. On drift it regenerates
+`references/` and opens a pull request carrying the upstream diff, so the `SKILL.md`
+compaction can be updated in the same PR and stamped with `--mark`.
+
+## Local rules
+
+`SKILL.md` has a short "Local rules" section for house rules that are not in the upstream
+guide (currently: `.R` files are ASCII only). Keep additions there, so a sync never
+confuses them with upstream content.
+
+## Checking R files mechanically
+
+```bash
+Rscript scripts/check.R path/to/file.R          # lints, non-ASCII lines, styler dry run
+Rscript scripts/check.R --fix path/to/file.R    # restyle in place, then report
+Rscript scripts/check.R --json path/to/file.R   # machine-readable findings
+```
+
+Needs R with the lintr and styler packages. It enables lintr's tidyverse defaults plus the
+guide's rules that lintr ships switched off (base pipe only, `library()` at the top, no
+`~ .x` lambdas, `&&`/`||` in conditions, no assignment inside calls, implicit returns),
+adds the local ASCII rule, and reports what styler would change. Exit status 1 if anything
+is off. The checker passes its own check.
+
+## Evaluation
+
+`evals/evals.json` holds three tasks with objective assertions, each run with and without
+the skill (Sonnet, one run per cell, September 2026). Iteration 2 added the checker step to
+the skill and reran the two code-producing tasks.
+
+| Task | Iter 1 with | Iter 1 without | Iter 2 with | Iter 2 without |
+|---|---|---|---|---|
+| Restyle a messy analysis script | 10/12 | 12/12 | 12/12 | 12/12 |
+| Package function with roxygen, tests, NEWS, commit | 11/12 | 12/12 | 11/12 | 10/12 |
+| Review a file with 13 planted violations | 13/13 | 13/13 | not rerun | not rerun |
+
+The baseline already knows the mechanical rules (spacing, pipes, braces), so the skill adds
+nothing there. Where the baseline slipped, it was on edge rules: a 58-character commit
+subject and a wrapped in-development NEWS bullet. Where the skill slipped in iteration 1,
+a kept final `return()`, the checker step caught it in iteration 2. Running the checker
+costs about 25 seconds and 3,000 tokens per task. Single runs per cell, so treat the
+numbers as directional.
 
 ## What the conversion does
 
@@ -62,6 +102,12 @@ references/
   git.md                 Part: Other
 scripts/
   sync.py                fetch, convert, check, mark
+  check.R                lintr + styler + ASCII check for .R files
+evals/
+  evals.json             three eval tasks with assertions
+  files/                 input files for the evals
+.github/workflows/
+  upstream-sync.yml      weekly drift check; opens a PR when upstream moves
 upstream/                local clone of tidyverse/style (gitignored)
 ```
 
