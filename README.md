@@ -12,6 +12,98 @@ The skill triggers when writing, reviewing, or restyling R code, R packages, rox
 documentation, testthat files, cli error messages, `NEWS.md` entries, or git commits and
 pull requests for R projects.
 
+## What it looks like
+
+Before: a script that runs, written the way scripts get written at 5pm. Exaggerated a little
+for demonstration, but every violation here is one the guide names. `scripts/check.R`
+counts 81 lints in these 15 lines.
+
+```r
+library(dplyr); library(ggplot2)
+permits.raw = read.csv('data/permits_2024.csv',stringsAsFactors=F)
+library(tidyr)
+Calc.Growth <- function (x,lag=1){
+  if(length(x)<=lag) return(NA_real_)
+  out=(x[(lag+1):length(x)]-x[1:(length(x)-lag)])/x[1:(length(x)-lag)]; return(out)
+}
+clean = permits.raw %>% filter(!is.na(units),units>0) %>% mutate(month=format(as.Date(issue_date),'%Y-%m'),big=ifelse(units>50,T,F)) %>% group_by(msa,month) %>% summarise(total=sum(units),share_mf=mean(structure_type=='multifamily'))
+growth = purrr::map(split(clean,clean$msa), ~ Calc.Growth(.x$total))
+p <- ggplot(filter(clean,msa %in% c('Houston','Dallas','Austin')),aes(x=month,y=total,colour=msa))+geom_line()+labs(title='Permits',x='Month',y='Units')
+if (nrow(clean)>0)
+{
+    print(p)
+} else message('empty')
+```
+
+After: the same script restyled with the skill and passed through `scripts/check.R`
+(0 lints, 0 non-ASCII lines, 0 styler changes).
+
+```r
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Load data ---------------------------------------------------------------
+
+permits_raw <- read.csv("data/permits_2024.csv", stringsAsFactors = FALSE)
+
+# Helpers -----------------------------------------------------------------
+
+calc_growth <- function(x, lag = 1) {
+  if (length(x) <= lag) {
+    return(NA_real_)
+  }
+  later <- x[(lag + 1):length(x)]
+  earlier <- x[1:(length(x) - lag)]
+  (later - earlier) / earlier
+}
+
+# Clean and summarise -----------------------------------------------------
+
+clean <- permits_raw |>
+  filter(!is.na(units), units > 0) |>
+  mutate(
+    month = format(as.Date(issue_date), "%Y-%m"),
+    big = units > 50
+  ) |>
+  summarise(
+    total = sum(units),
+    share_mf = mean(structure_type == "multifamily"),
+    .by = c(msa, month)
+  )
+
+growth <- purrr::map(split(clean, clean$msa), \(x) calc_growth(x$total))
+
+# Plot --------------------------------------------------------------------
+
+p <- clean |>
+  filter(msa %in% c("Houston", "Dallas", "Austin")) |>
+  ggplot(aes(x = month, y = total, colour = msa)) +
+  geom_line() +
+  labs(title = "Permits", x = "Month", y = "Units")
+
+if (nrow(clean) > 0) {
+  print(p)
+} else {
+  message("empty")
+}
+```
+
+What changed, and where the guide says so:
+
+| Before | After | Rule |
+|---|---|---|
+| `x = 5`, `'text'`, `T`/`F` | `x <- 5`, `"text"`, `TRUE`/`FALSE` | Syntax: assignment, strings, logicals |
+| `%>%`, `~ Calc.Growth(.x$total)` | `\|>`, `\(x) calc_growth(x$total)` | Pipes: magrittr; Functions: anonymous functions |
+| `Calc.Growth`, `permits.raw` | `calc_growth`, `permits_raw` | Object names: snake_case, dots reserved for S3 |
+| `library(tidyr)` mid-script; `a; b` | All `library()` calls at the top; one statement per line | Files: internal structure; Syntax: semicolons |
+| `if(...) return(NA_real_)` on one line; `return(out)` at the end | Early return in its own `{}`; last expression returned implicitly | Control flow modifiers; `return()` |
+| One 230-character pipeline | One step per line, one argument per line when a step wraps | Pipes: whitespace and long lines |
+| `ggplot(filter(clean, ...), ...)` | Filter in the pipeline, then `ggplot()` | ggplot2: data manipulation before plotting |
+| `{` on its own line, 4-space indent, unbraced `else` | `{` ends the line, 2 spaces, `else` on the `}` line, both branches braced | Braced expressions; If statements |
+| `ifelse(units > 50, T, F)` | `units > 50` | Not a style rule; the guide's note that `ifelse()` is eager and vectorised made the redundancy obvious |
+| No section markers | `# Load data ----` breaks | Files: internal structure |
+
 ## Keeping it in sync with upstream
 
 ```bash
