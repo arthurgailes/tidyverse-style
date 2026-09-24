@@ -1,0 +1,33 @@
+{
+  "name": "tidyverse-style",
+  "owner": {
+    "name": "Arthur Gailes"
+  },
+  "metadata": {
+    "description": "The tidyverse style guide as a Claude Code skill."
+  },
+  "plugins": [
+    {
+      "name": "tidyverse-style",
+      "description": "The complete tidyverse style guide for R code, packages, roxygen2 docs, tests, error messages, NEWS and commits, with a lintr/styler checker.",
+      "version": "1.0.0",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./"
+      ],
+      "author": {
+        "name": "Arthur Gailes"
+      },
+      "homepage": "https://github.com/arthurgailes/tidyverse-style",
+      "license": "CC-BY-SA-3.0",
+      "keywords": [
+        "r",
+        "tidyverse",
+        "style",
+        "lintr",
+        "styler"
+      ]
+    }
+  ]
+}

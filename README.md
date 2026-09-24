@@ -12,6 +12,33 @@ The skill triggers when writing, reviewing, or restyling R code, R packages, rox
 documentation, testthat files, cli error messages, `NEWS.md` entries, or git commits and
 pull requests for R projects.
 
+## Installation
+
+**Claude Code.** This repository is its own plugin marketplace. In Claude Code:
+
+```
+/plugin marketplace add arthurgailes/tidyverse-style
+/plugin install tidyverse-style@tidyverse-style
+```
+
+The skill then triggers on R work, or run it directly with
+`/tidyverse-style:tidyverse-style path/to/file.R`. Pull later changes with
+`/plugin marketplace update tidyverse-style`.
+
+**Codex**, for all your projects:
+
+```bash
+git clone https://github.com/arthurgailes/tidyverse-style.git ~/.agents/skills/tidyverse-style
+```
+
+Or for one repository only, `.agents/skills/tidyverse-style` inside it. Older Codex
+versions read `~/.codex/skills` instead. Restart Codex; the skill then triggers on R work,
+or name it with `$tidyverse-style`. Update later with `git pull` in that folder.
+
+The mechanical checker (`scripts/check.R`) needs R with the lintr and styler packages:
+`install.packages(c("lintr", "styler"))`. Without them the skill still works from the
+written rules.
+
 ## What it looks like
 
 Before: a script that runs, written the way scripts get written at 5pm. Exaggerated a little
@@ -104,31 +131,6 @@ What changed, and where the guide says so:
 | `ifelse(units > 50, T, F)` | `units > 50` | Not a style rule; the guide's note that `ifelse()` is eager and vectorised made the redundancy obvious |
 | No section markers | `# Load data ----` breaks | Files: internal structure |
 
-## Keeping it in sync with upstream
-
-```bash
-python scripts/sync.py            # fetch upstream, regenerate references/, report drift
-python scripts/sync.py --check    # exit 1 if references/ or SKILL.md are behind upstream
-python scripts/sync.py --mark     # record the current upstream commit in SKILL.md
-python scripts/sync.py --offline  # any of the above without a network fetch
-```
-
-Only Python 3 (standard library) and `git` are needed. The script keeps a clone of the
-upstream repo in `upstream/` (gitignored).
-
-Two commits are tracked:
-
-- `references/UPSTREAM.json` records the upstream commit the reference files were generated
-  from. `sync.py` regenerates them, so these are always current after a run.
-- `metadata.upstream_commit` in the `SKILL.md` frontmatter records the commit the compaction
-  was written against. When upstream moves, `sync.py` prints which chapters changed and the
-  `git diff` command to see exactly what, so the matching sections of `SKILL.md` can be
-  updated by hand. Run `--mark` afterwards.
-
-`.github/workflows/upstream-sync.yml` runs the check every Monday. On drift it regenerates
-`references/` and opens a pull request carrying the upstream diff, so the `SKILL.md`
-compaction can be updated in the same PR and stamped with `--mark`.
-
 ## Local rules
 
 `SKILL.md` has a short "Local rules" section for house rules that are not in the upstream
@@ -194,6 +196,8 @@ Each file starts with a comment naming the exact upstream blob it came from.
 ```
 SKILL.md                 the compacted guide (loaded by Claude)
 README.md                this file
+.claude-plugin/
+  marketplace.json       makes this repo a one-plugin Claude Code marketplace
 references/
   UPSTREAM.json          upstream commit, date, and chapter list for references/
   index.md               Welcome
