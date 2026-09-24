@@ -1,0 +1,9 @@
+﻿{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tidyverse-style",
+  "version": "1.0.0",
+  "description": "The tidyverse style guide for R code and package text, with a lintr and styler checker.",
+  "author": { "name": "Arthur Gailes" },
+  "repository": "https://github.com/arthurgailes/tidyverse-style",
+  "license": "CC-BY-SA-3.0"
+}

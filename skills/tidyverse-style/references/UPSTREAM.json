@@ -1,0 +1,21 @@
+{
+  "commit": "2aed77e452a059f4b5c9c4a991d00ea0c5e70cab",
+  "date": "2025-10-17T15:16:33-07:00",
+  "subject": "rm extra space (#251)",
+  "url": "https://github.com/tidyverse/style.git",
+  "synced_at": "2026-09-05T11:07:04+00:00",
+  "chapters": [
+    "index",
+    "files",
+    "syntax",
+    "functions",
+    "pipes",
+    "ggplot2",
+    "package-files",
+    "documentation",
+    "tests",
+    "errors",
+    "news",
+    "git"
+  ]
+}
