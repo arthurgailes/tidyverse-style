@@ -14,37 +14,29 @@ pull requests for R projects.
 
 ## Installation
 
-**Claude Code.** This repository is its own plugin marketplace. In Claude Code:
+**Claude Code**
 
-```
+```text
 /plugin marketplace add arthurgailes/tidyverse-style
 /plugin install tidyverse-style@tidyverse-style
 ```
 
-The skill then triggers on R work, or run it directly with
-`/tidyverse-style:tidyverse-style path/to/file.R`. Pull later changes with
-`/plugin marketplace update tidyverse-style`.
-
-**Codex.** Add the marketplace and install the plugin:
+**Codex**
 
 ```bash
 codex plugin marketplace add arthurgailes/tidyverse-style
 codex plugin add tidyverse-style@tidyverse-style
 ```
 
-Start a new conversation after installation. The skill triggers on R style work, or name
-it with `$tidyverse-style`. To get later releases, run
-`codex plugin marketplace upgrade tidyverse-style`, then reinstall the plugin.
-You can also install it from **Tidyverse Style** in the Codex app's Plugins Directory.
+**Local project install** (Codex or another agent that reads project skills):
 
-The Codex package lives in `plugin.json`, `.agents/plugins/marketplace.json`, and
-`skills/tidyverse-style/`. The root skill and its supporting files remain the source
-for the Claude installation. When editing them, copy `SKILL.md`, `references/`, and
-`scripts/` into `skills/tidyverse-style/` before releasing a new version.
+```bash
+git clone https://github.com/arthurgailes/tidyverse-style.git .agents/skills/tidyverse-style
+```
 
-The mechanical checker (`scripts/check.R`) needs R with the lintr and styler packages:
-`install.packages(c("lintr", "styler"))`. Without them the skill still works from the
-written rules.
+For agents that use another skill directory, clone there instead or point the agent at
+`SKILL.md`. Start a new session after installing. The optional R checker needs `lintr`
+and `styler`: `install.packages(c("lintr", "styler"))`.
 
 ## What it looks like
 
