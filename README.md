@@ -25,17 +25,17 @@ The skill then triggers on R work, or run it directly with
 `/tidyverse-style:tidyverse-style path/to/file.R`. Pull later changes with
 `/plugin marketplace update tidyverse-style`.
 
-**Codex.** Add this repository as a plugin marketplace:
+**Codex.** Add the marketplace and install the plugin:
 
 ```bash
 codex plugin marketplace add arthurgailes/tidyverse-style
+codex plugin add tidyverse-style@tidyverse-style
 ```
 
-In the Codex app, open the Plugins Directory, choose **Tidyverse Style**, and install
-**tidyverse-style**. Start a new conversation after installation. The skill triggers on
-R style work, or name it with `$tidyverse-style`. To get later releases, run
-`codex plugin marketplace upgrade tidyverse-style`, then refresh or reinstall the plugin
-in the app and start a new conversation.
+Start a new conversation after installation. The skill triggers on R style work, or name
+it with `$tidyverse-style`. To get later releases, run
+`codex plugin marketplace upgrade tidyverse-style`, then reinstall the plugin.
+You can also install it from **Tidyverse Style** in the Codex app's Plugins Directory.
 
 The Codex package lives in `plugin.json`, `.agents/plugins/marketplace.json`, and
 `skills/tidyverse-style/`. The root skill and its supporting files remain the source
